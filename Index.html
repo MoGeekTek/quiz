@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PMP Path — Master the Exam Content Outline</title>
+<style>
+  :root{
+    --text:#2C2C2B; --muted:#7D7A75; --canvas:#FFFFFF; --soft:#F9F8F7;
+    --surface:#F0EFED; --border:#E6E5E3;
+    --blue:#2783DE; --blue-soft:#E5F2FC;
+    --green:#46A171; --green-soft:#E8F1EC;
+    --orange:#D5803B; --orange-soft:#FBEBDE;
+    --red:#E56458; --red-soft:#FCE9E7;
+    --purple:#7C5BD6; --purple-soft:#EEE9FB;
+    --shadow:0 1px 2px rgba(0,0,0,.05), 0 4px 12px rgba(0,0,0,.04);
+    --radius:12px;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:var(--sans);color:var(--text);background:var(--soft);line-height:1.5;-webkit-font-smoothing:antialiased;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  .app{max-width:1120px;margin:0 auto;padding:24px;}
+
+  /* Top bar */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;letter-spacing:.5px;box-shadow:var(--shadow);}
+  .brand h1{font-size:19px;font-weight:750;letter-spacing:-.2px;}
+  .brand p{font-size:13px;color:var(--muted);}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;}
+  .stat{background:var(--canvas);border:1px solid var(--border);border-radius:10px;padding:8px 14px;min-width:78px;text-align:center;box-shadow:var(--shadow);}
+  .stat .v{font-size:18px;font-weight:750;line-height:1.1;}
+  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+  .stat .v.streak{color:var(--orange);}
+  .stat .v.xp{color:var(--blue);}
+  .stat .v.due{color:var(--purple);}
+
+  /* Level bar */
+  .levelwrap{background:var(--canvas);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:24px;box-shadow:var(--shadow);}
+  .levelhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .levelhead .title{font-weight:700;font-size:14px;}
+  .levelhead .sub{font-size:12px;color:var(--muted);}
+  .bar{height:9px;background:var(--surface);border-radius:99px;overflow:hidden;}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width .5s ease;}
+
+  /* Domain cards */
+  .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:8px 4px 14px;}
+  .domains{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:28px;}
+  .domain{background:var(--canvas);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .15s ease, box-shadow .15s ease;position:relative;overflow:hidden;}
+  .domain:not(.locked):hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.08);}
+  .domain .ribbon{position:absolute;top:0;left:0;height:4px;width:100%;}
+  .domain.d0 .ribbon{background:var(--blue);}
+  .domain.d1 .ribbon{background:var(--purple);}
+  .domain.d2 .ribbon{background:var(--orange);}
+  .domain .code{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;}
+  .domain h3{font-size:18px;font-weight:750;margin:2px 0 4px;letter-spacing:-.2px;}
+  .domain .weight{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;margin-bottom:10px;}
+  .domain.d0 .weight{background:var(--blue-soft);color:var(--blue);}
+  .domain.d1 .weight{background:var(--purple-soft);color:var(--purple);}
+  .domain.d2 .weight{background:var(--orange-soft);color:var(--orange);}
+  .domain .blurb{font-size:13px;color:var(--muted);margin-bottom:14px;flex:1;}
+  .domain .masteryrow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
+  .domain .masteryrow b{font-weight:750;}
+  .mbar{height:8px;background:var(--surface);border-radius:99px;overflow:hidden;margin-bottom:16px;}
+  .mbar > i{display:block;height:100%;border-radius:99px;transition:width .5s ease;}
+  .domain.d0 .mbar > i{background:var(--blue);}
+  .domain.d1 .mbar > i{background:var(--purple);}
+  .domain.d2 .mbar > i{background:var(--orange);}
+  .domain .actions{display:flex;gap:8px;}
+  .btn{border-radius:10px;padding:11px 16px;font-size:14px;font-weight:650;transition:filter .15s ease, background .15s ease;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:7px;}
+  .btn.primary{background:var(--blue);color:#fff;flex:1;}
+  .btn.primary:hover{filter:brightness(1.06);}
+  .btn.ghost{background:var(--surface);color:var(--text);}
+  .btn.ghost:hover{background:var(--border);}
+  .btn.small{padding:8px 12px;font-size:13px;min-height:38px;}
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+
+  .domain.locked{filter:grayscale(.4);}
+  .lockmsg{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:12px;font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;}
+  .lockmsg .ic{font-size:15px;}
+
+  /* Task chips */
+  .tasklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .chip{font-size:11px;padding:3px 8px;border-radius:99px;background:var(--surface);color:var(--muted);display:flex;align-items:center;gap:4px;}
+  .chip .dot{width:7px;height:7px;border-radius:99px;background:var(--border);}
+  .chip.mastered{background:var(--green-soft);color:var(--green);}
+  .chip.mastered .dot{background:var(--green);}
+  .chip.started .dot{background:var(--orange);}
+
+  /* Quiz overlay */
+  .overlay{position:fixed;inset:0;background:rgba(30,29,28,.55);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:24px;z-index:50;overflow-y:auto;}
+  .overlay.open{display:flex;}
+  .quiz{background:var(--canvas);border-radius:16px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;margin:auto;}
+  .quizhead{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .quizhead .meta{display:flex;flex-direction:column;gap:3px;}
+  .quizhead .dname{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);}
+  .quizhead .prog{font-size:12px;color:var(--muted);}
+  .approach-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:capitalize;}
+  .approach-tag.predictive{background:var(--blue-soft);color:var(--blue);}
+  .approach-tag.agile{background:var(--green-soft);color:var(--green);}
+  .approach-tag.hybrid{background:var(--purple-soft);color:var(--purple);}
+  .closeq{font-size:22px;color:var(--muted);line-height:1;padding:4px 8px;border-radius:8px;}
+  .closeq:hover{background:var(--surface);}
+  .qbar{height:5px;background:var(--surface);}
+  .qbar > i{display:block;height:100%;background:var(--blue);transition:width .3s ease;}
+
+  .quizbody{padding:24px 22px;}
+  .tasklabel{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .tasklabel b{color:var(--text);}
+  .stem{font-size:17px;font-weight:600;line-height:1.45;margin-bottom:20px;letter-spacing:-.1px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{text-align:left;border:1.5px solid var(--border);background:var(--canvas);border-radius:12px;padding:14px 16px;font-size:14.5px;display:flex;gap:12px;align-items:flex-start;transition:border-color .12s ease, background .12s ease;min-height:44px;}
+  .opt:hover:not(.disabled){border-color:var(--blue);background:var(--soft);}
+  .opt .key{width:24px;height:24px;border-radius:7px;background:var(--surface);color:var(--muted);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .opt.disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:var(--green-soft);}
+  .opt.correct .key{background:var(--green);color:#fff;}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft);}
+  .opt.wrong .key{background:var(--red);color:#fff;}
+  .opt.dim{opacity:.6;}
+
+  .feedback{margin-top:18px;border-radius:12px;padding:16px 18px;display:none;animation:fade .3s ease;}
+  .feedback.show{display:block;}
+  .feedback.right{background:var(--green-soft);border:1px solid #bfe0cd;}
+  .feedback.wrongfb{background:var(--red-soft);border:1px solid #f3c4bf;}
+  .feedback .verdict{font-weight:750;font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .feedback.right .verdict{color:var(--green);}
+  .feedback.wrongfb .verdict{color:var(--red);}
+  .feedback .why{font-size:14px;color:var(--text);}
+  .feedback .cite{margin-top:10px;font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.6);border-radius:8px;padding:8px 11px;}
+  .feedback .cite b{color:var(--text);}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .quizfoot{padding:16px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .sr-hint{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+
+  /* Result screen */
+  .result{padding:34px 26px;text-align:center;}
+  .result .big{font-size:46px;font-weight:800;letter-spacing:-1px;}
+  .result .big.pass{color:var(--green);}
+  .result .big.fail{color:var(--orange);}
+  .result h2{font-size:22px;margin:6px 0 4px;}
+  .result p{color:var(--muted);font-size:14px;max-width:440px;margin:0 auto 18px;}
+  .result .rowstats{display:flex;gap:14px;justify-content:center;margin:18px 0 22px;flex-wrap:wrap;}
+  .result .rs{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:12px 18px;min-width:96px;}
+  .result .rs .v{font-size:22px;font-weight:750;}
+  .result .rs .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .result .resbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+  /* Footer / tools */
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;color:var(--muted);font-size:12.5px;}
+  .toolbar a{color:var(--blue);text-decoration:none;font-weight:600;cursor:pointer;}
+  .badge-legend{display:flex;gap:14px;flex-wrap:wrap;}
+  .badge-legend span{display:flex;align-items:center;gap:6px;}
+  .badge-legend i{width:10px;height:10px;border-radius:99px;display:inline-block;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 20px;border-radius:99px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:all .3s ease;z-index:80;display:flex;align-items:center;gap:8px;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:820px){
+    .domains{grid-template-columns:1fr;}
+    .app{padding:16px;}
+    .stats{width:100%;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+
+  @media (prefers-color-scheme:dark){
+    :root{--text:#FFFFFF;--muted:rgba(255,255,255,.65);--canvas:#202020;--soft:#191919;--surface:#383836;--border:rgba(255,255,255,.20);--blue:#5E9FE8;--blue-soft:rgba(94,159,232,.14);--green:#72BC8F;--green-soft:rgba(114,188,143,.14);--orange:#DE9255;--orange-soft:rgba(222,146,85,.14);--red:#E97366;--red-soft:rgba(233,115,102,.14);--purple:#A98BEA;--purple-soft:rgba(169,139,234,.14);}
+    .feedback.right{border-color:rgba(114,188,143,.4);}
+    .feedback.wrongfb{border-color:rgba(233,115,102,.4);}
+    .feedback .cite{background:rgba(0,0,0,.25);}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">PMP</div>
+      <div>
+        <h1>PMP Path</h1>
+        <p>Master every domain &amp; task of the 2026 Exam Content Outline</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v xp" id="stat-xp">0</div><div class="l">XP</div></div>
+      <div class="stat"><div class="v streak" id="stat-streak">0</div><div class="l">Streak</div></div>
+      <div class="stat"><div class="v" id="stat-mastery">0%</div><div class="l">Mastery</div></div>
+      <div class="stat"><div class="v due" id="stat-due">0</div><div class="l">Due</div></div>
+    </div>
+  </div>
+
+  <div class="levelwrap">
+    <div class="levelhead">
+      <div class="title" id="level-title">Level 1 · Aspiring PM</div>
+      <div class="sub" id="level-sub">0 / 100 XP to next level</div>
+    </div>
+    <div class="bar"><i id="level-bar" style="width:0%"></i></div>
+  </div>
+
+  <div class="section-title">Your Learning Path</div>
+  <div class="domains" id="domains"></div>
+
+  <div class="toolbar">
+    <div class="badge-legend">
+      <span><i style="background:var(--green)"></i>Task mastered (≥80%)</span>
+      <span><i style="background:var(--orange)"></i>In progress</span>
+      <span><i style="background:var(--border)"></i>Not started</span>
+    </div>
+    <div><a id="review-link">Review due cards</a> &nbsp;·&nbsp; <a id="reset-link">Reset progress</a></div>
+  </div>
+</div>
+
+<!-- Quiz overlay -->
+<div class="overlay" id="overlay">
+  <div class="quiz" id="quiz"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* PMP ECO 2026 — Domains, Tasks, and scenario-based question bank */
+window.PMP_DATA = {
+  domains: [
+    {
+      id: "people",
+      code: "I",
+      name: "People",
+      weight: 33,
+      blurb: "Leading, empowering, and engaging the humans who make projects succeed.",
+      tier: 0,
+      tasks: [
+        { id: "p1", title: "Develop a common vision", enablers: ["Ensure a shared vision with key stakeholders", "Promote and keep the vision current", "Find the root cause of vision misunderstanding"] },
+        { id: "p2", title: "Manage conflicts", enablers: ["Identify conflict sources", "Analyze the context", "Implement an agreed resolution strategy", "Manage ground-rule violations"] },
+        { id: "p3", title: "Lead the project team", enablers: ["Empower the team", "Determine leadership style", "Establish clear roles and responsibilities", "Represent the voice of the team"] },
+        { id: "p4", title: "Engage stakeholders", enablers: ["Identify & analyze stakeholders", "Tailor communication", "Execute the engagement plan", "Build trust and influence"] },
+        { id: "p5", title: "Align stakeholder expectations", enablers: ["Categorize stakeholders", "Identify expectations", "Facilitate alignment discussions", "Act on mentoring opportunities"] },
+        { id: "p6", title: "Manage stakeholder expectations", enablers: ["Identify customer expectations", "Maintain outcomes to expectations", "Monitor satisfaction and respond"] },
+        { id: "p7", title: "Help ensure knowledge transfer", enablers: ["Identify critical knowledge", "Gather knowledge", "Foster a knowledge-transfer environment"] },
+        { id: "p8", title: "Plan and manage communication", enablers: ["Define a communication strategy", "Promote transparency", "Establish a feedback loop", "Support reporting & governance"] }
+      ]
+    },
+    {
+      id: "process",
+      code: "II",
+      name: "Process",
+      weight: 41,
+      blurb: "The technical craft of delivering value: planning, scope, schedule, risk, quality, and closure.",
+      tier: 1,
+      tasks: [
+        { id: "pr1", title: "Develop an integrated plan & plan delivery", enablers: ["Assess needs, complexity, magnitude", "Recommend predictive/agile/hybrid approach", "Create & maintain the integrated plan", "Estimate effort and resources"] },
+        { id: "pr2", title: "Develop and manage project scope", enablers: ["Define scope", "Obtain stakeholder agreement", "Break down scope"] },
+        { id: "pr3", title: "Help ensure value-based delivery", enablers: ["Identify value components", "Prioritize by value & feedback", "Deliver value incrementally", "Verify a benefits measurement system"] },
+        { id: "pr4", title: "Plan and manage resources", enablers: ["Define & plan resources to requirements", "Manage & optimize availability"] },
+        { id: "pr5", title: "Plan and manage procurement", enablers: ["Plan procurement", "Select contract types", "Negotiate agreements", "Manage suppliers & contracts"] },
+        { id: "pr6", title: "Plan and manage finance", enablers: ["Analyze financial needs", "Quantify contingency reserves", "Plan spend tracking & reporting", "Monitor financial variations"] },
+        { id: "pr7", title: "Plan and optimize quality", enablers: ["Gather quality requirements", "Execute the quality plan", "Manage cost of quality", "Implement continuous improvement"] },
+        { id: "pr8", title: "Plan and manage schedule", enablers: ["Estimate tasks (milestones, story points)", "Create & baseline schedule", "Analyze schedule variation"] },
+        { id: "pr9", title: "Evaluate project status", enablers: ["Develop metrics & analysis", "Tailor and manage artifacts", "Assess progress", "Communicate status"] },
+        { id: "pr10", title: "Manage project closure", enablers: ["Obtain approval of completion", "Determine closure criteria", "Validate transition readiness", "Capture final lessons learned"] }
+      ]
+    },
+    {
+      id: "business",
+      code: "III",
+      name: "Business Environment",
+      weight: 26,
+      blurb: "Connecting the project to strategy: governance, compliance, change, risk, and the outside world.",
+      tier: 2,
+      tasks: [
+        { id: "b1", title: "Define and establish project governance", enablers: ["Establish structure, rules & ethics via OPAs", "Define success metrics", "Outline escalation paths & thresholds"] },
+        { id: "b2", title: "Plan and manage project compliance", enablers: ["Confirm compliance requirements", "Classify categories & threats", "Analyze consequences of noncompliance", "Measure compliance"] },
+        { id: "b3", title: "Manage and control changes", enablers: ["Execute change control", "Communicate change status", "Implement approved changes", "Update documentation"] },
+        { id: "b4", title: "Remove impediments and manage issues", enablers: ["Evaluate impediment impact", "Prioritize & apply intervention", "Recognize when a risk becomes an issue"] },
+        { id: "b5", title: "Plan and manage risk", enablers: ["Identify & analyze risks", "Develop a risk management plan", "Maintain a risk register", "Communicate risk impact"] },
+        { id: "b6", title: "Continuous improvement", enablers: ["Utilize lessons learned", "Update improvement processes", "Update OPAs"] },
+        { id: "b7", title: "Support organizational change", enablers: ["Assess organizational culture", "Evaluate change impact & required actions"] },
+        { id: "b8", title: "Evaluate external business environment changes", enablers: ["Survey external changes (regulation, tech, market)", "Assess impact on scope/backlog", "Continually review the environment"] }
+      ]
+    }
+  ],
+
+  // Scenario-based questions. approach: predictive | agile | hybrid
+  questions: [
+    // ---------- PEOPLE ----------
+    { id:"q_p1_1", domain:"people", task:"p1", approach:"hybrid",
+      stem:"Three teams each describe the product's purpose differently in their stand-ups. Deadlines are being met, but features conflict with one another. What should the project manager do FIRST?",
+      options:[
+        {t:"Escalate the missed integration to the sponsor for a decision.",correct:false},
+        {t:"Facilitate a session to co-create and confirm a single shared vision with key stakeholders.",correct:true},
+        {t:"Add more detail to each team's individual backlog.",correct:false},
+        {t:"Reassign team members so the strongest team absorbs the work.",correct:false}
+      ],
+      why:"Conflicting features despite on-time delivery signal a misunderstood vision, not a scheduling problem. The task is to ensure and promote a shared vision with key stakeholders before the divergence compounds." },
+    { id:"q_p1_2", domain:"people", task:"p1", approach:"predictive",
+      stem:"Midway through a two-year program, market priorities have shifted and the original charter vision feels outdated to the team. What is the BEST response?",
+      options:[
+        {t:"Keep executing the original vision to avoid scope churn.",correct:false},
+        {t:"Revisit and refresh the vision with stakeholders so it stays current and motivating.",correct:true},
+        {t:"Let each team interpret the vision as they see fit.",correct:false},
+        {t:"Wait for the sponsor to notice and raise it.",correct:false}
+      ],
+      why:"A vision must be kept current. Proactively refreshing it with stakeholders keeps everyone aligned to reality rather than a stale charter." },
+
+    { id:"q_p2_1", domain:"people", task:"p2", approach:"agile",
+      stem:"Two senior developers openly argue about architecture in every ceremony, and the team is disengaging. What is the MOST effective first step?",
+      options:[
+        {t:"Ask both developers to keep disagreements private going forward.",correct:false},
+        {t:"Identify the underlying source of the conflict and analyze its context before choosing a resolution.",correct:true},
+        {t:"Choose the more experienced developer's design to end the debate.",correct:false},
+        {t:"Report both developers to their functional managers.",correct:false}
+      ],
+      why:"Effective conflict management starts with identifying the source and analyzing context, then implementing an agreed resolution—not suppressing the disagreement or picking sides arbitrarily." },
+    { id:"q_p2_2", domain:"people", task:"p2", approach:"hybrid",
+      stem:"A team member repeatedly interrupts others in meetings, violating a ground rule the team set together. What should the project manager do?",
+      options:[
+        {t:"Ignore it since the ground rules are informal.",correct:false},
+        {t:"Address the violation by referring back to the agreed ground rules and reinforcing them.",correct:true},
+        {t:"Remove the person from future meetings.",correct:false},
+        {t:"Create entirely new ground rules without the team.",correct:false}
+      ],
+      why:"When ground rules the team agreed to are violated, the PM manages and rectifies the violation by upholding the shared agreement—keeping accountability with the team." },
+
+    { id:"q_p3_1", domain:"people", task:"p3", approach:"agile",
+      stem:"A high-performing agile team keeps asking the PM to make every technical decision for them. What leadership move best supports long-term performance?",
+      options:[
+        {t:"Continue deciding to keep velocity high.",correct:false},
+        {t:"Empower the team to self-organize and own technical decisions, coaching as needed.",correct:true},
+        {t:"Assign a single lead to make all technical calls.",correct:false},
+        {t:"Escalate each decision to the architecture board.",correct:false}
+      ],
+      why:"Leading a team includes empowering it and choosing a servant-leadership style that builds self-organization, rather than centralizing decisions in the PM." },
+    { id:"q_p3_2", domain:"people", task:"p3", approach:"predictive",
+      stem:"New team members are unsure who is responsible for deliverable sign-offs, causing duplicated work. What should the PM establish?",
+      options:[
+        {t:"A stricter time-tracking system.",correct:false},
+        {t:"Clear roles and responsibilities so each person knows their accountability.",correct:true},
+        {t:"A single approver for the entire project regardless of area.",correct:false},
+        {t:"More frequent status meetings.",correct:false}
+      ],
+      why:"Duplicated work from ownership confusion is solved by establishing clear roles and responsibilities within the team—a core leadership enabler." },
+
+    { id:"q_p4_1", domain:"people", task:"p4", approach:"hybrid",
+      stem:"A powerful regulator was discovered late to have strong interest in your project's outcome. What should you do FIRST?",
+      options:[
+        {t:"Add them to the mass status-email distribution list.",correct:false},
+        {t:"Analyze the stakeholder's power/interest and tailor communication and engagement to their needs.",correct:true},
+        {t:"Wait until they raise a concern before engaging.",correct:false},
+        {t:"Treat them the same as all other stakeholders.",correct:false}
+      ],
+      why:"Engaging stakeholders means analyzing them and tailoring communication to their needs and influence—generic mass communication under-serves a high-power, high-interest stakeholder." },
+    { id:"q_p4_2", domain:"people", task:"p4", approach:"agile",
+      stem:"A key business stakeholder has stopped attending sprint reviews and seems disengaged. What is the BEST action?",
+      options:[
+        {t:"Proceed without them; attendance is optional.",correct:false},
+        {t:"Rebuild engagement by understanding their needs and adjusting how and when you involve them.",correct:true},
+        {t:"Record the reviews and stop inviting them.",correct:false},
+        {t:"Escalate their absence to HR.",correct:false}
+      ],
+      why:"Executing the engagement plan and building trust requires actively re-engaging drifting stakeholders by tailoring involvement to their needs." },
+
+    { id:"q_p5_1", domain:"people", task:"p5", approach:"hybrid",
+      stem:"Two department heads expect different outcomes from the same release. What should the PM do to align them?",
+      options:[
+        {t:"Deliver to whichever head has more authority.",correct:false},
+        {t:"Facilitate a discussion to surface and align their expectations openly.",correct:true},
+        {t:"Average the two requests without discussion.",correct:false},
+        {t:"Defer the decision to the delivery team.",correct:false}
+      ],
+      why:"Aligning stakeholder expectations means facilitating discussions to reconcile differing expectations rather than silently choosing or averaging." },
+
+    { id:"q_p6_1", domain:"people", task:"p6", approach:"predictive",
+      stem:"An external customer's satisfaction scores are dropping even though deliverables meet the signed specification. What should the PM do?",
+      options:[
+        {t:"Point to the contract; the spec is being met.",correct:false},
+        {t:"Monitor the satisfaction signal, understand the gap, and respond to realign outcomes to expectations.",correct:true},
+        {t:"Wait for the next formal review to discuss it.",correct:false},
+        {t:"Increase output speed to compensate.",correct:false}
+      ],
+      why:"Managing expectations includes monitoring customer satisfaction and responding as needed—meeting the letter of a spec while satisfaction falls signals a misalignment to address." },
+
+    { id:"q_p7_1", domain:"people", task:"p7", approach:"hybrid",
+      stem:"A specialist contractor with unique domain knowledge is rolling off in two weeks. What is the PM's priority?",
+      options:[
+        {t:"Extend the contract indefinitely.",correct:false},
+        {t:"Identify the critical knowledge and foster its transfer to the team before departure.",correct:true},
+        {t:"Document nothing; the work is already done.",correct:false},
+        {t:"Hire an identical replacement contractor.",correct:false}
+      ],
+      why:"Ensuring knowledge transfer means identifying critical knowledge, gathering it, and fostering an environment for transfer—so expertise isn't lost when people leave." },
+
+    { id:"q_p8_1", domain:"people", task:"p8", approach:"predictive",
+      stem:"Stakeholders complain they get either too much or too little project information. What should the PM create?",
+      options:[
+        {t:"A single weekly email to everyone with all details.",correct:false},
+        {t:"A communication strategy defining audience, content, frequency, and a feedback loop.",correct:true},
+        {t:"Ad-hoc updates only when asked.",correct:false},
+        {t:"A shared drive where people find their own updates.",correct:false}
+      ],
+      why:"Planning and managing communication means defining a strategy aligned to stakeholder needs and establishing a feedback loop—not one-size-fits-all broadcasts." },
+
+    // ---------- PROCESS ----------
+    { id:"q_pr1_1", domain:"process", task:"pr1", approach:"hybrid",
+      stem:"Requirements are ~30% stable, the domain is highly uncertain, and the customer wants early feedback. Which development approach should the PM recommend?",
+      options:[
+        {t:"Fully predictive with a fixed baseline.",correct:false},
+        {t:"An adaptive/agile or hybrid approach that delivers increments and incorporates feedback.",correct:true},
+        {t:"Delay all work until requirements are fully known.",correct:false},
+        {t:"Whatever approach the last project used.",correct:false}
+      ],
+      why:"Selecting the development approach follows from assessing needs, complexity, and uncertainty. High uncertainty plus a desire for early feedback favors adaptive/hybrid delivery." },
+    { id:"q_pr1_2", domain:"process", task:"pr1", approach:"predictive",
+      stem:"Several subsidiary plans (scope, schedule, cost, risk) exist but conflict on assumptions. What is the PM's responsibility?",
+      options:[
+        {t:"Let each plan owner defend their own assumptions.",correct:false},
+        {t:"Integrate the plans into one coherent project management plan and resolve dependencies and gaps.",correct:true},
+        {t:"Discard the conflicting plans and start over.",correct:false},
+        {t:"Use only the schedule as the source of truth.",correct:false}
+      ],
+      why:"Developing an integrated plan means consolidating subsidiary plans, assessing dependencies and gaps, and maintaining continued business value—integration is the PM's job." },
+
+    { id:"q_pr2_1", domain:"process", task:"pr2", approach:"predictive",
+      stem:"Late in delivery, stakeholders keep adding 'small' features they claim were always intended. What foundational artifact prevents this?",
+      options:[
+        {t:"A larger contingency reserve.",correct:false},
+        {t:"A clearly defined and agreed scope, with changes routed through change control.",correct:true},
+        {t:"More frequent status meetings.",correct:false},
+        {t:"A faster delivery team.",correct:false}
+      ],
+      why:"Managing scope means defining scope and obtaining stakeholder agreement; undocumented additions are scope creep to be controlled, not silently absorbed." },
+
+    { id:"q_pr3_1", domain:"process", task:"pr3", approach:"agile",
+      stem:"The backlog has 200 items and limited capacity this quarter. How should the PM guide prioritization?",
+      options:[
+        {t:"Build items in the order they were requested.",correct:false},
+        {t:"Prioritize work by value and stakeholder feedback to deliver benefits incrementally.",correct:true},
+        {t:"Complete the easiest items first regardless of value.",correct:false},
+        {t:"Wait until the whole backlog can be delivered at once.",correct:false}
+      ],
+      why:"Value-based delivery prioritizes work by value and stakeholder feedback and seeks opportunities to deliver value incrementally rather than by request order." },
+
+    { id:"q_pr4_1", domain:"process", task:"pr4", approach:"hybrid",
+      stem:"A critical test environment is shared across three projects and is often unavailable when your team needs it. What should the PM do?",
+      options:[
+        {t:"Assume it will be free and plan around hope.",correct:false},
+        {t:"Plan resource needs against requirements and actively manage and optimize availability.",correct:true},
+        {t:"Build a duplicate environment without approval.",correct:false},
+        {t:"Let the team wait until it frees up.",correct:false}
+      ],
+      why:"Managing resources means defining resources to requirements and optimizing needs and availability—including contended shared resources." },
+
+    { id:"q_pr5_1", domain:"process", task:"pr5", approach:"predictive",
+      stem:"Requirements for an outsourced component are still evolving and hard to fix precisely. Which contract type is generally MOST appropriate?",
+      options:[
+        {t:"Firm-fixed-price, to cap cost.",correct:false},
+        {t:"A cost-reimbursable or time-and-materials type suited to evolving scope.",correct:true},
+        {t:"No contract; use a handshake agreement.",correct:false},
+        {t:"Whatever the vendor prefers.",correct:false}
+      ],
+      why:"Selecting preferred contract types depends on scope certainty. Fixed-price fits well-defined scope; evolving scope favors cost-reimbursable or T&M to fairly share risk." },
+
+    { id:"q_pr6_1", domain:"process", task:"pr6", approach:"predictive",
+      stem:"Actual spend is tracking 15% above the planned burn rate at the one-third mark. What should the PM do FIRST?",
+      options:[
+        {t:"Immediately cut team headcount.",correct:false},
+        {t:"Analyze the financial variation and engage the governance process before acting.",correct:true},
+        {t:"Ignore it until the project ends.",correct:false},
+        {t:"Silently move money from the contingency reserve.",correct:false}
+      ],
+      why:"Managing finance includes monitoring financial variations and working with governance—analysis and proper reserve/governance handling come before drastic cuts." },
+
+    { id:"q_pr7_1", domain:"process", task:"pr7", approach:"hybrid",
+      stem:"Defects are being found late in user acceptance, causing costly rework. Which quality principle best addresses this?",
+      options:[
+        {t:"Add more inspectors at the end of the line.",correct:false},
+        {t:"Build quality in via prevention and continuous improvement, managing cost of quality.",correct:true},
+        {t:"Lower the acceptance criteria to reduce defect counts.",correct:false},
+        {t:"Ship and fix defects in production.",correct:false}
+      ],
+      why:"Optimizing quality favors prevention over inspection and managing cost of quality with continuous improvement—finding defects late is the expensive path." },
+
+    { id:"q_pr8_1", domain:"process", task:"pr8", approach:"predictive",
+      stem:"A stakeholder asks how much schedule slack exists before the end date slips. What does the PM analyze?",
+      options:[
+        {t:"The total budget remaining.",correct:false},
+        {t:"The critical path and float within the baselined schedule.",correct:true},
+        {t:"The number of open risks.",correct:false},
+        {t:"The team's morale survey.",correct:false}
+      ],
+      why:"Managing schedule includes creating and baselining a schedule and analyzing schedule variation—float on the critical path tells you how much slip is tolerable." },
+
+    { id:"q_pr9_1", domain:"process", task:"pr9", approach:"agile",
+      stem:"The sponsor wants a reliable read on whether the team will finish the release on time. Which metric is MOST useful?",
+      options:[
+        {t:"Number of meetings held this month.",correct:false},
+        {t:"Velocity/burndown trends compared against remaining scope.",correct:true},
+        {t:"Lines of code written.",correct:false},
+        {t:"Hours logged by each person.",correct:false}
+      ],
+      why:"Evaluating status means developing meaningful metrics and analysis; burndown/velocity against remaining work forecasts completion far better than activity counts." },
+
+    { id:"q_pr10_1", domain:"process", task:"pr10", approach:"predictive",
+      stem:"The final deliverable is accepted by the customer. Before releasing the team, what must the PM ensure?",
+      options:[
+        {t:"Immediately reassign everyone to new work.",correct:false},
+        {t:"Confirm closure criteria are met, transition is ready, and lessons learned are captured.",correct:true},
+        {t:"Delete the project repository to save space.",correct:false},
+        {t:"Skip retrospectives since the project succeeded.",correct:false}
+      ],
+      why:"Managing closure requires obtaining approval, meeting closure criteria, validating transition readiness, and capturing final lessons learned before disbanding." },
+
+    // ---------- BUSINESS ENVIRONMENT ----------
+    { id:"q_b1_1", domain:"business", task:"b1", approach:"predictive",
+      stem:"Decisions on the project stall because no one knows who can approve budget increases above a threshold. What is missing?",
+      options:[
+        {t:"A larger project budget.",correct:false},
+        {t:"Governance defining decision rights, escalation paths, and thresholds.",correct:true},
+        {t:"More frequent team stand-ups.",correct:false},
+        {t:"A new project management tool.",correct:false}
+      ],
+      why:"Establishing governance defines structure, rules, escalation paths, and thresholds via OPAs—so authority for decisions is clear." },
+
+    { id:"q_b2_1", domain:"business", task:"b2", approach:"hybrid",
+      stem:"A new data-privacy regulation may apply to your product. What should the PM do FIRST?",
+      options:[
+        {t:"Wait until an auditor raises it.",correct:false},
+        {t:"Confirm the compliance requirements and classify them, then analyze consequences of noncompliance.",correct:true},
+        {t:"Assume the legal team is already handling it.",correct:false},
+        {t:"Remove the affected feature entirely.",correct:false}
+      ],
+      why:"Managing compliance starts with confirming requirements, classifying categories/threats, and analyzing the consequences of noncompliance before choosing an approach." },
+
+    { id:"q_b3_1", domain:"business", task:"b3", approach:"predictive",
+      stem:"A stakeholder emails the developer directly asking for a scope change and the developer starts building it. What went wrong?",
+      options:[
+        {t:"Nothing; direct requests speed delivery.",correct:false},
+        {t:"The change bypassed the change control process and was not evaluated or approved.",correct:true},
+        {t:"The developer should have refused all contact.",correct:false},
+        {t:"The stakeholder should have called instead of emailed.",correct:false}
+      ],
+      why:"Managing changes requires executing the change control process—assessing, approving, communicating, and documenting changes rather than acting on informal requests." },
+
+    { id:"q_b4_1", domain:"business", task:"b4", approach:"agile",
+      stem:"The team is blocked because a vendor API credential hasn't arrived, halting the sprint. What is the PM's role?",
+      options:[
+        {t:"Wait for the vendor to eventually respond.",correct:false},
+        {t:"Actively remove the impediment by applying an intervention strategy to unblock the team.",correct:true},
+        {t:"Reassign the blocked work to the next sprint and move on.",correct:false},
+        {t:"Ask the team to build without testing the integration.",correct:false}
+      ],
+      why:"Removing impediments means evaluating impact, prioritizing, and applying an intervention to clear blockers so the team can keep delivering." },
+
+    { id:"q_b5_1", domain:"business", task:"b5", approach:"hybrid",
+      stem:"A previously identified risk (a key supplier's instability) has now actually caused a missed shipment. What is the correct classification and action?",
+      options:[
+        {t:"It is still a risk; keep it in the risk register unchanged.",correct:false},
+        {t:"Recognize it has become an issue and manage it accordingly while communicating impact.",correct:true},
+        {t:"Delete it from the register since it already happened.",correct:false},
+        {t:"Ignore it since the shipment is already missed.",correct:false}
+      ],
+      why:"A risk that materializes becomes an issue; the PM recognizes the transition, manages the issue, and communicates the risk/issue impact to stakeholders." },
+    { id:"q_b5_2", domain:"business", task:"b5", approach:"predictive",
+      stem:"During planning, the PM wants to prepare for uncertain events proactively. What is the BEST practice?",
+      options:[
+        {t:"React to problems only after they occur.",correct:false},
+        {t:"Identify and analyze risks, then maintain a risk register with response plans.",correct:true},
+        {t:"Add a flat 50% buffer to every estimate.",correct:false},
+        {t:"Assume experienced teams don't need a risk register.",correct:false}
+      ],
+      why:"Managing risk means identifying, analyzing, and maintaining a risk register with response plans—proactive management beats blanket buffers or pure reaction." },
+
+    { id:"q_b6_1", domain:"business", task:"b6", approach:"agile",
+      stem:"A retrospective surfaces a recurring deployment failure pattern seen on past projects too. What should happen with this insight?",
+      options:[
+        {t:"Note it privately and move on.",correct:false},
+        {t:"Capture the lesson learned and update organizational process assets so future projects benefit.",correct:true},
+        {t:"Blame the previous project team.",correct:false},
+        {t:"Wait until the same failure recurs to act.",correct:false}
+      ],
+      why:"Continuous improvement means utilizing lessons learned and updating OPAs so improvements persist across the organization, not just this team." },
+
+    { id:"q_b7_1", domain:"business", task:"b7", approach:"hybrid",
+      stem:"Your project introduces a new workflow, but adoption is low because staff are attached to the old process. What should the PM assess?",
+      options:[
+        {t:"Whether the software has enough features.",correct:false},
+        {t:"The organizational culture and change impact, then determine required actions to support adoption.",correct:true},
+        {t:"Whether to cancel the project.",correct:false},
+        {t:"How to force the change via mandate only.",correct:false}
+      ],
+      why:"Supporting organizational change means assessing culture and the change's impact and determining actions to enable adoption—technical delivery alone doesn't ensure change sticks." },
+
+    { id:"q_b8_1", domain:"business", task:"b8", approach:"agile",
+      stem:"A competitor's launch and a new regulation both emerge mid-project, potentially reshaping priorities. What should the PM do?",
+      options:[
+        {t:"Freeze the backlog to protect the current plan.",correct:false},
+        {t:"Survey the external changes and assess/prioritize their impact on scope and backlog.",correct:true},
+        {t:"Cancel the project and restart planning.",correct:false},
+        {t:"Assume external events won't affect delivery.",correct:false}
+      ],
+      why:"Evaluating the external business environment means surveying changes (regulation, market, tech) and continually assessing their impact on scope/backlog." }
+  ]
+};
+
+</script>
+<script>
+/* PMP Path — learning engine
+   Methodologies:
+   - Active Recall: scenario challenges force answer production.
+   - Spaced Repetition: SM-2 (SuperMemo) / Leitner-inspired scheduling per card.
+   - Immediate Feedback: contextual "why" + ECO task citation after each choice.
+   - Progressive Disclosure & Mastery Tracking: domains unlock at 80% mastery.
+*/
+(function(){
+  "use strict";
+  const DATA = window.PMP_DATA;
+  const KEY = "pmp_path_state_v1";
+  const MASTERY_GATE = 80;          // % needed to unlock next domain
+  const SESSION_LEN = 6;            // questions per session
+  const XP_CORRECT = 12, XP_WRONG = 3, XP_MASTER_BONUS = 40;
+
+  // ---------- State ----------
+  const defaultState = () => ({
+    xp:0, streak:0, lastDay:null,
+    cards:{},   // qid -> {ef,interval,reps,due,seen,correct}
+    tasks:{},   // taskId -> {attempts,correct}
+    unlocked:{people:true,process:false,business:false}
+  });
+
+  let S = load();
+
+  function load(){
+    try{ const raw = localStorage.getItem(KEY); if(raw){ return Object.assign(defaultState(), JSON.parse(raw)); } }
+    catch(e){}
+    return defaultState();
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+  const todayNum = () => Math.floor(Date.now()/86400000);
+
+  function card(qid){
+    if(!S.cards[qid]) S.cards[qid] = {ef:2.5, interval:0, reps:0, due:todayNum(), seen:0, correct:0};
+    return S.cards[qid];
+  }
+
+  // ---------- SM-2 spaced repetition ----------
+  // grade 0..5 ; <3 => lapse (re-queue soon), >=3 => graduate/advance interval
+  function schedule(c, grade){
+    c.seen++;
+    if(grade >= 3){
+      c.correct++;
+      if(c.reps === 0) c.interval = 1;
+      else if(c.reps === 1) c.interval = 3;
+      else c.interval = Math.round(c.interval * c.ef);
+      c.reps++;
+    } else {
+      c.reps = 0;
+      c.interval = 0; // re-queue same session / next day (Leitner box 1)
+    }
+    c.ef = Math.max(1.3, c.ef + (0.1 - (5-grade)*(0.08 + (5-grade)*0.02)));
+    c.due = todayNum() + c.interval;
+  }
+
+  // ---------- Mastery ----------
+  // Task mastery = rolling correctness across attempts (min 2 attempts to count fully).
+  function taskMastery(taskId){
+    const t = S.tasks[taskId];
+    if(!t || t.attempts === 0) return 0;
+    return Math.round((t.correct / t.attempts) * 100);
+  }
+  function taskStatus(taskId){
+    const t = S.tasks[taskId];
+    if(!t || t.attempts===0) return "none";
+    if(t.attempts>=2 && taskMastery(taskId) >= MASTERY_GATE) return "mastered";
+    return "started";
+  }
+  function domainMastery(dom){
+    const tasks = dom.tasks;
+    let sum=0; tasks.forEach(t=> sum += taskMastery(t.id));
+    return Math.round(sum / tasks.length);
+  }
+  function domainMasteredCount(dom){
+    return dom.tasks.filter(t=> taskStatus(t.id)==="mastered").length;
+  }
+  function overallMastery(){
+    let sum=0,n=0;
+    DATA.domains.forEach(d=> d.tasks.forEach(t=>{ sum+=taskMastery(t.id); n++; }));
+    return Math.round(sum/n);
+  }
+
+  // Progressive disclosure: a domain unlocks when the previous domain reaches gate mastery.
+  function refreshUnlocks(){
+    S.unlocked.people = true;
+    S.unlocked.process = domainMastery(DATA.domains[0]) >= MASTERY_GATE;
+    S.unlocked.business = domainMastery(DATA.domains[1]) >= MASTERY_GATE;
+  }
+
+  function dueCount(){
+    const td = todayNum();
+    return Object.keys(S.cards).filter(q=> S.cards[q].due <= td && S.cards[q].seen>0).length;
+  }
+
+  // ---------- XP / levels ----------
+  const LEVELS = [
+    {min:0,name:"Aspiring PM"},{min:100,name:"Team Coordinator"},{min:250,name:"Project Lead"},
+    {min:450,name:"Senior PM"},{min:700,name:"Program Strategist"},{min:1000,name:"PMP Master"}
+  ];
+  function levelInfo(){
+    let idx=0; for(let i=0;i<LEVELS.length;i++){ if(S.xp>=LEVELS[i].min) idx=i; }
+    const cur=LEVELS[idx], next=LEVELS[idx+1];
+    const floor=cur.min, ceil=next?next.min:cur.min;
+    const pct= next? Math.round(((S.xp-floor)/(ceil-floor))*100):100;
+    return {idx,cur,next,pct,floor,ceil};
+  }
+
+  function bumpStreak(){
+    const t = todayNum();
+    if(S.lastDay===null){ S.streak=1; }
+    else if(S.lastDay===t){ /* same day */ }
+    else if(S.lastDay===t-1){ S.streak++; }
+    else { S.streak=1; }
+    S.lastDay=t;
+  }
+
+  // ---------- Rendering: dashboard ----------
+  const $ = id => document.getElementById(id);
+
+  function renderStats(){
+    $("stat-xp").textContent = S.xp;
+    $("stat-streak").textContent = S.streak;
+    $("stat-mastery").textContent = overallMastery()+"%";
+    $("stat-due").textContent = dueCount();
+    const li = levelInfo();
+    $("level-title").textContent = "Level "+(li.idx+1)+" · "+li.cur.name;
+    $("level-sub").textContent = li.next ? (S.xp-li.floor)+" / "+(li.ceil-li.floor)+" XP to \u201c"+li.next.name+"\u201d" : "Max level reached — you’re exam-ready!";
+    $("level-bar").style.width = li.pct+"%";
+  }
+
+  function renderDomains(){
+    refreshUnlocks();
+    const wrap = $("domains");
+    wrap.innerHTML = "";
+    DATA.domains.forEach((dom, di)=>{
+      const unlocked = S.unlocked[dom.id];
+      const dm = domainMastery(dom);
+      const masteredN = domainMasteredCount(dom);
+      const el = document.createElement("div");
+      el.className = "domain d"+dom.tier + (unlocked?"":" locked");
+
+      const chips = dom.tasks.map(t=>{
+        const st = taskStatus(t.id);
+        return `<span class="chip ${st}" title="${esc(t.title)} — ${taskMastery(t.id)}% mastery"><span class="dot"></span>${dom.code}.${t.id.replace(/\D/g,'')}</span>`;
+      }).join("");
+
+      let actions;
+      if(unlocked){
+        actions = `<div class="actions">
+          <button class="btn primary" data-play="${dom.id}">▶ Play Domain</button>
+          <button class="btn ghost small" data-review="${dom.id}">Review</button>
+        </div>`;
+      } else {
+        const prev = DATA.domains[di-1];
+        actions = `<div class="lockmsg"><span class="ic">🔒</span><span>Unlock by reaching <b>${MASTERY_GATE}% mastery</b> in Domain ${prev.code}: ${esc(prev.name)} (currently ${domainMastery(prev)}%).</span></div>`;
+      }
+
+      el.innerHTML = `
+        <div class="ribbon"></div>
+        <div class="code">DOMAIN ${dom.code}</div>
+        <h3>${esc(dom.name)}</h3>
+        <div class="weight">${dom.weight}% of exam</div>
+        <div class="blurb">${esc(dom.blurb)}</div>
+        <div class="masteryrow"><span>Mastery</span><b>${dm}% · ${masteredN}/${dom.tasks.length} tasks</b></div>
+        <div class="mbar"><i style="width:${dm}%"></i></div>
+        <div class="tasklist" style="margin-bottom:16px">${chips}</div>
+        ${actions}`;
+      wrap.appendChild(el);
+    });
+
+    wrap.querySelectorAll("[data-play]").forEach(b=> b.onclick=()=> startSession(b.getAttribute("data-play"), "play"));
+    wrap.querySelectorAll("[data-review]").forEach(b=> b.onclick=()=> startSession(b.getAttribute("data-review"), "review"));
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+  // ---------- Session building ----------
+  let session = null;
+
+  function pickQuestions(domainId, mode){
+    const td = todayNum();
+    let pool = DATA.questions.filter(q=> q.domain===domainId);
+    if(mode==="review"){
+      // due cards first
+      const due = pool.filter(q=> S.cards[q.id] && S.cards[q.id].seen>0 && S.cards[q.id].due<=td);
+      pool = due.length? due : pool;
+    }
+    // Priority: (1) never seen, (2) due, (3) lowest mastery / not mastered
+    pool.sort((a,b)=>{
+      const ca=S.cards[a.id], cb=S.cards[b.id];
+      const pa = priority(a,ca,td), pb = priority(b,cb,td);
+      return pa-pb;
+    });
+    return pool.slice(0, Math.min(SESSION_LEN, pool.length));
+  }
+  function priority(q,c,td){
+    if(!c || c.seen===0) return 0;                 // new -> highest priority
+    if(c.due<=td) return 1;                          // due for repetition
+    if(taskStatus(q.task)!=="mastered") return 2;    // still weak
+    return 3;                                        // mastered & not due
+  }
+
+  function globalDuePool(){
+    const td = todayNum();
+    const due = DATA.questions.filter(q=> S.cards[q.id] && S.cards[q.id].seen>0 && S.cards[q.id].due<=td);
+    return due.slice(0, SESSION_LEN);
+  }
+
+  function startSession(domainId, mode){
+    let qs;
+    if(domainId==="__due__"){ qs = globalDuePool(); }
+    else { qs = pickQuestions(domainId, mode); }
+    if(!qs.length){ toast("No cards to review right now — great job!"); return; }
+    session = { qs, i:0, correct:0, mode, domainId, answered:false };
+    openOverlay();
+    renderQuestion();
+  }
+
+  // ---------- Quiz rendering ----------
+  function openOverlay(){ $("overlay").classList.add("open"); document.body.style.overflow="hidden"; }
+  function closeOverlay(){ $("overlay").classList.remove("open"); document.body.style.overflow=""; session=null; renderAll(); }
+
+  function taskById(id){ let f=null; DATA.domains.forEach(d=> d.tasks.forEach(t=>{ if(t.id===id) f={t,d}; })); return f; }
+
+  function renderQuestion(){
+    const q = session.qs[session.i];
+    session.answered=false;
+    const info = taskById(q.task);
+    const dom = info.d, task = info.t;
+    const total = session.qs.length;
+    const opts = q.options.map((o,idx)=>{
+      const keyLetter = String.fromCharCode(65+idx);
+      return `<button class="opt" data-idx="${idx}"><span class="key">${keyLetter}</span><span>${esc(o.t)}</span></button>`;
+    }).join("");
+
+    $("quiz").innerHTML = `
+      <div class="quizhead">
+        <div class="meta">
+          <div class="dname">Domain ${dom.code} · ${esc(dom.name)}</div>
+          <div class="prog">Question ${session.i+1} of ${total}${session.mode==="review"?" · Spaced review":""}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="approach-tag ${q.approach}">${q.approach}</span>
+          <button class="closeq" id="closeq">&times;</button>
+        </div>
+      </div>
+      <div class="qbar"><i style="width:${Math.round((session.i/total)*100)}%"></i></div>
+      <div class="quizbody">
+        <div class="tasklabel">Testing → <b>Task ${dom.code}.${task.id.replace(/\D/g,'')}: ${esc(task.title)}</b></div>
+        <div class="stem">${esc(q.stem)}</div>
+        <div class="options" id="options">${opts}</div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div class="quizfoot">
+        <div class="sr-hint">🧠 Active recall · answers re-queued via spaced repetition</div>
+        <button class="btn primary small" id="nextbtn" style="display:none">Next →</button>
+      </div>`;
+
+    $("closeq").onclick = closeOverlay;
+    $("options").querySelectorAll(".opt").forEach(b=> b.onclick=()=> answer(parseInt(b.getAttribute("data-idx"),10)));
+    $("nextbtn").onclick = next;
+  }
+
+  function answer(idx){
+    if(session.answered) return;
+    session.answered=true;
+    const q = session.qs[session.i];
+    const chosen = q.options[idx];
+    const correct = !!chosen.correct;
+    const correctIdx = q.options.findIndex(o=>o.correct);
+    const info = taskById(q.task);
+
+    // update option styles
+    const optEls = $("options").querySelectorAll(".opt");
+    optEls.forEach((el,i)=>{
+      el.classList.add("disabled");
+      if(i===correctIdx) el.classList.add("correct");
+      else if(i===idx) el.classList.add("wrong");
+      else el.classList.add("dim");
+    });
+
+    // record task attempt + SM-2
+    if(!S.tasks[q.task]) S.tasks[q.task]={attempts:0,correct:0};
+    S.tasks[q.task].attempts++;
+    if(correct) S.tasks[q.task].correct++;
+    schedule(card(q.id), correct?4:1);
+
+    // XP + streak
+    S.xp += correct?XP_CORRECT:XP_WRONG;
+    if(correct) session.correct++;
+    bumpStreak();
+
+    // detect fresh mastery for bonus
+    let masterMsg="";
+    if(correct && taskStatus(q.task)==="mastered" && !S.tasks[q.task]._bonus){
+      S.tasks[q.task]._bonus=true; S.xp+=XP_MASTER_BONUS;
+      masterMsg = ` 🌟 Task mastered! +${XP_MASTER_BONUS} XP`;
+    }
+    save();
+    renderStats();
+
+    // feedback with ECO citation
+    const fb = $("feedback");
+    fb.className = "feedback show "+(correct?"right":"wrongfb");
+    fb.innerHTML = `
+      <div class="verdict">${correct?"✔ Correct":"✖ Not quite"}${correct?" · +"+XP_CORRECT+" XP":""}${masterMsg}</div>
+      <div class="why">${esc(q.why)}</div>
+      <div class="cite">📘 <b>ECO Domain ${info.d.code} — Task: ${esc(info.t.title)}</b><br>Enablers: ${info.t.enablers.map(esc).join(" · ")}</div>`;
+    $("nextbtn").style.display="inline-flex";
+    $("nextbtn").textContent = (session.i+1<session.qs.length)?"Next →":"See results";
+  }
+
+  function next(){
+    session.i++;
+    if(session.i>=session.qs.length){ renderResult(); return; }
+    renderQuestion();
+  }
+
+  function renderResult(){
+    const total = session.qs.length;
+    const pct = Math.round((session.correct/total)*100);
+    const pass = pct>=MASTERY_GATE;
+    refreshUnlocks(); save();
+    // check if a new domain just unlocked
+    let unlockMsg="";
+    if(session.domainId==="people" && S.unlocked.process) unlockMsg="🔓 Domain II: Process is now unlocked!";
+    if(session.domainId==="process" && S.unlocked.business) unlockMsg="🔓 Domain III: Business Environment is now unlocked!";
+
+    $("quiz").innerHTML = `
+      <div class="result">
+        <div class="big ${pass?"pass":"fail"}">${pct}%</div>
+        <h2>${pass?"Session cleared!":"Keep going — almost there"}</h2>
+        <p>${pass?"You’re demonstrating solid mastery. Missed items are re-queued with spaced repetition so they resurface at the right time.":"You need "+MASTERY_GATE+"% to master a task. The concepts you missed are scheduled to return soon so you lock them in."}</p>
+        ${unlockMsg?`<p style="color:var(--green);font-weight:700">${unlockMsg}</p>`:""}
+        <div class="rowstats">
+          <div class="rs"><div class="v">${session.correct}/${total}</div><div class="l">Correct</div></div>
+          <div class="rs"><div class="v">+${session.correct*XP_CORRECT + (total-session.correct)*XP_WRONG}</div><div class="l">XP earned</div></div>
+          <div class="rs"><div class="v">${dueCount()}</div><div class="l">Cards due</div></div>
+        </div>
+        <div class="resbtns">
+          <button class="btn primary" id="again">Play again</button>
+          <button class="btn ghost" id="done">Back to path</button>
+        </div>
+      </div>`;
+    $("again").onclick = ()=>{ const d=session.domainId,m=session.mode; closeOverlaySilent(); startSession(d,m); };
+    $("done").onclick = closeOverlay;
+    renderAll();
+  }
+  function closeOverlaySilent(){ session=null; }
+
+  // ---------- Toast ----------
+  let toastTimer=null;
+  function toast(msg){
+    const t=$("toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2600);
+  }
+
+  // ---------- Wire up global controls ----------
+  $("review-link").onclick = ()=>{
+    if(dueCount()===0){ toast("Nothing due yet — play a domain to build your deck."); return; }
+    startSession("__due__","review");
+  };
+  $("reset-link").onclick = ()=>{
+    if(confirm("Reset all progress, XP, and mastery? This cannot be undone.")){
+      S = defaultState(); save(); renderAll(); toast("Progress reset.");
+    }
+  };
+  $("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeOverlay(); });
+  document.addEventListener("keydown", e=>{
+    if(!$("overlay").classList.contains("open")) return;
+    if(e.key==="Escape") closeOverlay();
+    if(session && !session.answered && /^[1-4]$/.test(e.key)){
+      const b=$("options") && $("options").querySelector(`[data-idx="${+e.key-1}"]`); if(b) b.click();
+    }
+    if(session && session.answered && (e.key==="Enter"||e.key===" ")){ const n=$("nextbtn"); if(n && n.style.display!=="none") n.click(); }
+  });
+
+  function renderAll(){ renderStats(); renderDomains(); }
+  renderAll();
+})();
+
+</script>
+</body>
+</html>
